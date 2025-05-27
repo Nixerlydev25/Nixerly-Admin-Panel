@@ -1,0 +1,17 @@
+export enum AuthEndpoints {
+  SIGNIN = "signin",
+  LOGOUT = "logout",
+}
+
+export enum Restrictions {
+  CREATE_POST = "CREATE_POST",
+  EDIT_POST = "EDIT_POST",
+  DELETE_POST = "DELETE_POST",
+  VIEW_POST = "VIEW_POST",
+  CREATE_COMMENT = "CREATE_COMMENT",
+  VIEW_COMMENT = "VIEW_COMMENT",
+  ANALYTICS = "ANALYTICS",
+  REPORT = "REPORT",
+  ACCOUNT = "ACCOUNT",
+  CONTENT = "CONTENT",
+}
