@@ -82,9 +82,9 @@ const AdminWorkerDetailView: React.FC<WorkerDetailProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div className="bg-white rounded-lg shadow-sm">
       {/* Header with admin controls */}
-      <div className="bg-gray-50 p-4 border-b border-gray-200 flex items-center justify-between">
+      <div className="m-6 mb-0 rounded-sm bg-gray-50 p-4 border flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
             {worker?.user?.firstName[0]}

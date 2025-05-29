@@ -3,7 +3,7 @@ import PageTitle from '@/components/PageTitle';
 import { Users, Activity, FileText, ThumbsUp } from 'lucide-react';
 import Card from '@/components/Card';
 import { Separator } from '@/components/ui/separator';
-import { useDashboardStats } from '@/services/dashboard';
+import { useDashboardStats } from '@/services/dashboard/dashboard.hook';
 
 export default function Home() {
   const { data, isFetching, error, refetch } = useDashboardStats();

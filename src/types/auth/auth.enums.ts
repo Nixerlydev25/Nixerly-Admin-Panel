@@ -1,5 +1,5 @@
 export enum AuthEndpoints {
-  SIGNIN = "signin",
+  SIGNIN = "sign-in",
   LOGOUT = "logout",
 }
 

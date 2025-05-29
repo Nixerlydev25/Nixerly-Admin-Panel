@@ -17,16 +17,17 @@ export default class JobsService {
     jobType?: string;
   }) {
     try {
-      const response = await instance.get(`/v1/admin/jobs/get-all-jobs`, {
-        params: {
-          page: pageParam,
-          limit,
-          search,
-          status,
-          employmentType,
-          jobType,
-        },
-      });
+      const params: Record<string, any> = {
+        page: pageParam,
+        limit,
+      };
+
+      if (search) params.search = search;
+      if (status) params.status = status;
+      if (employmentType) params.employmentType = employmentType;
+      if (jobType) params.jobType = jobType;
+
+      const response = await instance.get(`/admin/jobs/get-all-jobs`, { params });
       return response.data;
     } catch (error: any) {
       console.error(
@@ -39,7 +40,7 @@ export default class JobsService {
 
   static async getJobById(jobId: string) {
     try {
-      const response = await instance.get(`/v1/jobs/${jobId}`);
+      const response = await instance.get(`/jobs/${jobId}`);
       return response.data;
     } catch (error: any) {
       console.error(
@@ -55,7 +56,7 @@ export default class JobsService {
   static async getJobApplications(jobId: string) {
     try {
       const response = await instance.get(
-        `/v1/jobs/get-applicants-of-job/${jobId}`
+        `/jobs/get-applicants-of-job/${jobId}`
       );
       return response.data;
     } catch (error: any) {
@@ -72,7 +73,7 @@ export default class JobsService {
   static async toggleBlockJob(jobId: string) {
     try {
       const response = await instance.post(
-        `/v1/admin/jobs/toggle-block/${jobId}`
+        `/admin/jobs/toggle-block/${jobId}`
       );
       return response.data;
     } catch (error: any) {

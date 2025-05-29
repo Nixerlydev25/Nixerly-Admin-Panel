@@ -16,7 +16,7 @@ export function useSignInMutation() {
       setFormLoading(false);
       toast({
         title: "Log in Sucess",
-        variant: "sucess",
+        variant: "success",
       });
       router.push("/dashboard");
     },

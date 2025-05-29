@@ -5,7 +5,7 @@ export default class DashboardService {
   static async fetchStats(): Promise<DashboardStatsResponse> {
     try {
       const response = await instance.get<DashboardStatsResponse>(
-        "/v1/admin/statistics/dashboard-statistics",
+        "/admin/statistics/dashboard-statistics",
       );
       return response.data;
     } catch (error: any) {

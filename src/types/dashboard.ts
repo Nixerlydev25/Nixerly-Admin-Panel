@@ -1,4 +1,5 @@
 export interface DashboardStatsResponse {
+  message: string;
   statistics: {
     totalJobs: JobStats;
     totalWorkers: WorkerStats;

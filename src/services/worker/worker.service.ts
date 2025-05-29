@@ -15,7 +15,7 @@ export default class WorkerService {
     country?: string;
   }) {
     try {
-      const response = await instance.get(`/v1/admin/worker/get-all-workers`, {
+      const response = await instance.get(`/admin/worker/get-all-workers`, {
         params: {
           page: pageParam,
           limit,
@@ -39,7 +39,7 @@ export default class WorkerService {
   static async getWorkerById(workerId: string) {
     try {
       const response = await instance.get(
-        `/v1/worker/${workerId}`
+        `/worker/${workerId}`
       );
       return response.data;
     } catch (error: any) {
@@ -56,7 +56,7 @@ export default class WorkerService {
   static async toggleBlockWorker(workerId: string) {
     try {
       const response = await instance.post(
-        `/v1/admin/worker/toggle-block/${workerId}`
+        `/admin/worker/toggle-block/${workerId}`
       );
       return response.data;
     } catch (error: any) {

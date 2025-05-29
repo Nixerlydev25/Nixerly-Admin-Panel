@@ -57,7 +57,7 @@ export function Navbar({ children, links }: Props) {
     onSuccess: (response) => {
       toast({
         title: "logout Successful",
-        variant: "sucess",
+        variant: "success",
       });
       router.push("/sign-in");
     },
@@ -217,7 +217,7 @@ export function Navbar({ children, links }: Props) {
             <div className="mb-6 mt-4 flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
               <Link href="/" className="flex items-center gap-2 font-semibold">
                 <Image
-                  src="/logon.png"
+                  src="/logo.png"
                   width={40}
                   height={40}
                   alt="nixerly"

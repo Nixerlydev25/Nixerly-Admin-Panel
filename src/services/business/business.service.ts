@@ -15,17 +15,18 @@ export default class BusinessService {
     country?: string;
   }) {
     try {
+      const params: Record<string, any> = {
+        page: pageParam,
+        limit,
+      };
+
+      if (search) params.search = search;
+      if (status) params.status = status;
+      if (country) params.country = country;
+
       const response = await instance.get(
-        `/v1/admin/business/get-all-businesses`,
-        {
-          params: {
-            page: pageParam,
-            limit,
-            search,
-            status,
-            country,
-          },
-        }
+        `/admin/business/get-all-businesses`,
+        { params }
       );
       return response.data;
     } catch (error: any) {
@@ -42,7 +43,7 @@ export default class BusinessService {
   static async fetchBusinessById(id: string) {
     try {
       const response = await instance.get(
-        `/v1/business/business-profile-details/${id}`
+        `/business/business-profile-details/${id}`
       );
       return response.data;
     } catch (error: any) {
@@ -59,7 +60,7 @@ export default class BusinessService {
   static async toggleBlockBusiness(businessId: string) {
     try {
       const response = await instance.post(
-        `/v1/admin/business/toggle-block/${businessId}`
+        `/admin/business/toggle-block/${businessId}`
       );
       return response.data;
     } catch (error: any) {
