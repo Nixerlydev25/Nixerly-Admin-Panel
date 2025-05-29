@@ -1,18 +1,42 @@
 export interface DashboardStatsResponse {
-  totalUsers: {
-    count: number;
-    growthPercentage: number;
+  statistics: {
+    totalJobs: JobStats;
+    totalWorkers: WorkerStats;
+    totalBusiness: BusinessStats;
+    applications: ApplicationStats;
+    jobMetrics: JobMetrics;
   };
-  totalPosts: {
-    count: number;
-    growthPercentage: number;
-  };
-  totalLikes: {
-    count: number;
-    growthPercentage: number;
-  };
-  totalComments: {
-    count: number;
-    growth: number;
-  };
+}
+
+interface JobStats {
+  count: number;
+  blocked: number;
+  open: number;
+  closed: number;
+  inProgress: number;
+  completed: number;
+}
+
+interface WorkerStats {
+  count: number;
+  blocked: number;
+  activeLastMonth: number;
+}
+
+interface BusinessStats {
+  count: number;
+  blocked: number;
+  activeLastMonth: number;
+}
+
+interface ApplicationStats {
+  total: number;
+  accepted: number;
+  acceptanceRate: string;
+}
+
+interface JobMetrics {
+  completionRate: string;
+  openRate: string;
+  blockRate: string;
 }

@@ -45,7 +45,7 @@ export function useBlockUser() {
       setFormLoading(false);
       toast({
         title: response?.message,
-        variant: "sucess",
+        variant: "success",
       });
       queryClient.invalidateQueries({
         queryKey: ["users"],

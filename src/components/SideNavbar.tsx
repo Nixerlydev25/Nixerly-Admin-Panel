@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { Navbar } from "./ui/nav";
+import { Navbar } from './ui/nav';
 
 type Props = { children: React.ReactNode };
 
 import {
   UsersIcon,
-  StickyNote,
   MessageSquareWarning,
-} from "lucide-react";
-import { Routes } from "@/types/routes";
+  Briefcase,
+} from 'lucide-react';
+import { Routes } from '@/types/routes';
 
 export default function SideNavbar({ children }: Props) {
   return (
@@ -17,21 +17,35 @@ export default function SideNavbar({ children }: Props) {
       <Navbar
         links={[
           {
-            title: "Users",
+            title: 'Users',
             icon: <UsersIcon className="h-5 w-5" />,
-            children: [{ title: "User management", href: Routes.USER_MANAGEMENT }],
+            children: [
+              { title: 'Workers management', href: Routes.WORKER_MANAGEMENT },
+              {
+                title: 'Businesses management',
+                href: Routes.BUSINESS_MANAGEMENT,
+              },
+            ],
           },
           {
-            title: "Posts",
-            icon: <StickyNote className="h-5 w-5" />,
-            children: [{ title: "Post management", href: Routes.POST_MANAGEMENT }],
+            title: 'Jobs',
+            icon: <Briefcase className="h-5 w-5" />,
+            children: [
+              { title: 'Job management', href: Routes.JOB_MANAGEMENT },
+            ],
           },
           {
-            title: "User Reports",
+            title: 'User Reports',
             icon: <MessageSquareWarning className="h-5 w-5" />,
             children: [
-              { title: "User Report management", href: Routes.USER_REPORT_MANAGEMENT },
-              { title: "Post Reports management", href: Routes.POST_REPORT_MANAGEMENT  },
+              {
+                title: 'User Report management',
+                href: Routes.USER_REPORT_MANAGEMENT,
+              },
+              {
+                title: 'Post Reports management',
+                href: Routes.POST_REPORT_MANAGEMENT,
+              },
             ],
           },
           // {

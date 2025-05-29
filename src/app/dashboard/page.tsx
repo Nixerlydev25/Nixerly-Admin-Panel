@@ -1,9 +1,9 @@
-"use client";
-import PageTitle from "@/components/PageTitle";
-import { Users, Activity, FileText, ThumbsUp } from "lucide-react";
-import Card from "@/components/Card";
-import { Separator } from "@/components/ui/separator";
-import { useDashboardStats } from "@/services/dashboard";
+'use client';
+import PageTitle from '@/components/PageTitle';
+import { Users, Activity, FileText, ThumbsUp } from 'lucide-react';
+import Card from '@/components/Card';
+import { Separator } from '@/components/ui/separator';
+import { useDashboardStats } from '@/services/dashboard';
 
 export default function Home() {
   const { data, isFetching, error, refetch } = useDashboardStats();
@@ -25,7 +25,7 @@ export default function Home() {
                 label=""
                 icon={Users}
                 amount=""
-                description={{ value: "", text: "" }}
+                description={{ value: '', text: '' }}
               />
             ))}
           </section>
@@ -38,38 +38,38 @@ export default function Home() {
   const transformedData = data
     ? [
         {
-          label: "Total Users",
-          amount: data.totalUsers.count.toLocaleString(),
+          label: 'Total Jobs',
+          amount: data.statistics.totalJobs?.count,
           description: {
-            value: `+${data.totalUsers.growthPercentage}%`,
-            text: "growth this month",
+            value: `${data.statistics.totalJobs?.open}`,
+            text: 'Open Jobs',
           },
           icon: Users,
         },
         {
-          label: "Total Posts",
-          amount: data.totalPosts.count.toLocaleString(),
+          label: 'Total Workers',
+          amount: data.statistics.totalWorkers?.count,
           description: {
-            value: `+${data.totalPosts.growthPercentage}%`,
-            text: "growth this month",
+            value: `${data.statistics.totalWorkers?.activeLastMonth}`,
+            text: 'Workers Active Last Month',
           },
           icon: FileText,
         },
         {
-          label: "Total Likes",
-          amount: data.totalLikes.count.toLocaleString(),
+          label: 'Total Businesses',
+          amount: data.statistics.totalBusiness?.count,
           description: {
-            value: `+${data.totalLikes.growthPercentage}%`,
-            text: "growth this month",
+            value: `${data.statistics.totalBusiness?.activeLastMonth}`,
+            text: 'Businesses Active Last Month',
           },
           icon: ThumbsUp,
         },
         {
-          label: "Total Comments",
-          amount: data.totalComments.count.toLocaleString(),
+          label: 'Applications',
+          amount: data.statistics.applications?.total,
           description: {
-            value: `+${data.totalComments.growth.toLocaleString()}`,
-            text: "growth this month",
+            value: `+${data.statistics.jobMetrics.openRate}`,
+            text: 'Total Jobs Open Rate',
           },
           icon: Activity,
         },
@@ -98,7 +98,7 @@ export default function Home() {
           {transformedData.map((stat, i) => (
             <Card
               key={i}
-              amount={stat.amount}
+              amount={String(stat.amount)}
               description={stat.description}
               icon={stat.icon}
               label={stat.label}
