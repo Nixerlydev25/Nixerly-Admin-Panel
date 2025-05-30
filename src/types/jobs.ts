@@ -11,7 +11,10 @@ export interface TJob {
   salary?: number;
   status: string;
   isBlocked: boolean;
+  applications: any[];
 }
+
+
 
 export interface JobListResponse {
   pagination: {
