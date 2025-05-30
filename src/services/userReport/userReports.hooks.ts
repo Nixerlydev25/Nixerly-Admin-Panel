@@ -45,7 +45,7 @@ export function useResolveUserReport() {
       setFormLoading(false);
       toast({
         title: response?.message,
-        variant: "sucess",
+        variant: "success",
       });
       queryClient.invalidateQueries({
         queryKey: ["userReports"],
@@ -67,7 +67,7 @@ export function useDeleteUserReport() {
       setFormLoading(false);
       toast({
         title: response?.message,
-        variant: "sucess",
+        variant: "success",
       });
       queryClient.invalidateQueries({
         queryKey: ["userReports"],

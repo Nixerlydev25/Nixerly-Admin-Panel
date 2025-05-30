@@ -60,7 +60,7 @@ export function useBlockPost() {
       setFormLoading(false);
       toast({
         title: response?.message,
-        variant: "sucess",
+        variant: "success",
       });
       queryClient.invalidateQueries({
         queryKey: ["posts"],
@@ -109,7 +109,7 @@ export function useChangePostReportStatus() {
     onSuccess: (response) => {
       toast({
         title: response?.message,
-        variant: "sucess",
+        variant: "success",
       });
       queryClient.invalidateQueries({
         queryKey: ["reported-post"],
