@@ -17,10 +17,6 @@ export default function JobDetailExample() {
   const { id } = useParams();
 
   const { data, isFetching, error, refetch } = useJobById(id as string);
-  const {
-    data: applications,
-    isFetching: isFetchingApplications,
-  } = useJobApplications(id as string);
 
   const { toggleBlockMutation } = useBlockJob();
 
@@ -28,19 +24,17 @@ export default function JobDetailExample() {
     toggleBlockMutation.mutate(jobId);
   };
 
-  console.log(applications);
-
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="p-6">
         <PageTitle route="Jobs" subRoute="Job Management" />
       </div>
       <Separator className="h-[2px] w-full" />
-      {data && !isFetching && !isFetchingApplications ? (
+      {data && !isFetching ? (
         <JobDetailView
-          job={data as any}
+          job={data.job as any}
           toggleBlock={handleToggleBlock}
-          applications={applications as any}
+          applications={data.job?.applications as any}
         />
       ) : (
         <JobDetailSkeleton />

@@ -4,11 +4,7 @@ import { Navbar } from './ui/nav';
 
 type Props = { children: React.ReactNode };
 
-import {
-  UsersIcon,
-  MessageSquareWarning,
-  Briefcase,
-} from 'lucide-react';
+import { UsersIcon, MessageSquareWarning, Briefcase } from 'lucide-react';
 import { Routes } from '@/types/routes';
 
 export default function SideNavbar({ children }: Props) {
@@ -39,12 +35,16 @@ export default function SideNavbar({ children }: Props) {
             icon: <MessageSquareWarning className="h-5 w-5" />,
             children: [
               {
-                title: 'User Report management',
-                href: Routes.USER_REPORT_MANAGEMENT,
+                title: 'Worker   Report management',
+                href: Routes.WORKER_REPORT_MANAGEMENT,
               },
               {
-                title: 'Post Reports management',
-                href: Routes.POST_REPORT_MANAGEMENT,
+                title: 'Business Report management',
+                href: Routes.BUSINESS_REPORT_MANAGEMENT,
+              },
+              {
+                title: 'Job Report management',
+                href: Routes.JOB_REPORT_MANAGEMENT,
               },
             ],
           },

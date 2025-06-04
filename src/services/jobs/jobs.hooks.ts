@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import JobsService from '@/services/jobs/jobs.service';
-import { JobListResponse } from '@/types/jobs';
+import { JobListResponse, TJob } from '@/types/jobs';
 import { useToast } from '@/components/ui/use-toast';
 import { useState } from 'react';
 import { CustomAxiosError } from '../api';
@@ -41,7 +41,10 @@ export function usePaginatedJobs({
 }
 
 export function useJobById(jobId: string) {
-  const { data, isFetching, error, refetch } = useQuery<JobListResponse>({
+  const { data, isFetching, error, refetch } = useQuery<{
+    message: string;
+    job: TJob;
+  }>({
     queryKey: ['jobs', { jobId }],
     queryFn: async () => JobsService.getJobById(jobId),
   });

@@ -88,8 +88,11 @@ const JobDetailView: React.FC<JobDetailProps> = ({
     toggleBlock?.(job.id);
   };
 
+
+  console.log(job)
+
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString)?.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -97,7 +100,7 @@ const JobDetailView: React.FC<JobDetailProps> = ({
   };
 
   const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString)?.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -108,12 +111,12 @@ const JobDetailView: React.FC<JobDetailProps> = ({
 
   // Format employment type and job type
   const formatType = (type: string) => {
-    return type.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+    return type?.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
   };
 
   // Get status color
   const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case 'open':
         return 'bg-green-100 text-green-700';
       case 'closed':
@@ -137,7 +140,7 @@ const JobDetailView: React.FC<JobDetailProps> = ({
           </div>
           <div>
             <h2 className="text-lg font-semibold text-gray-900">
-              Job ID: {job.id.substring(0, 8)}...
+              Job ID: {job?.id?.substring(0, 8)}...
             </h2>
             <p className="text-sm text-gray-500">{job.title}</p>
           </div>
@@ -323,7 +326,7 @@ const JobDetailView: React.FC<JobDetailProps> = ({
                         <div>
                           <p className="text-sm font-medium text-gray-900">
                             Worker ID:{' '}
-                            {application.workerProfileId.substring(0, 8)}...
+                            {application.workerProfile.id.substring(0, 8)}...
                           </p>
                           <p className="text-xs text-gray-500">
                             Applied {formatDateTime(application.createdAt)}
@@ -482,7 +485,7 @@ const JobDetailView: React.FC<JobDetailProps> = ({
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-500">Business ID:</span>
                   <span className="text-sm text-gray-900">
-                    {job.businessProfileId.substring(0, 8)}...
+                    {job.businessProfileId?.substring(0, 8)}...
                   </span>
                 </div>
                 <Separator />

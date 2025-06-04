@@ -27,7 +27,9 @@ export default class JobsService {
       if (employmentType) params.employmentType = employmentType;
       if (jobType) params.jobType = jobType;
 
-      const response = await instance.get(`/admin/jobs/get-all-jobs`, { params });
+      const response = await instance.get(`/admin/jobs/get-all-jobs`, {
+        params,
+      });
       return response.data;
     } catch (error: any) {
       console.error(
@@ -40,7 +42,7 @@ export default class JobsService {
 
   static async getJobById(jobId: string) {
     try {
-      const response = await instance.get(`/jobs/${jobId}`);
+      const response = await instance.get(`/admin/jobs/get-by-id/${jobId}`);
       return response.data;
     } catch (error: any) {
       console.error(
@@ -72,9 +74,7 @@ export default class JobsService {
 
   static async toggleBlockJob(jobId: string) {
     try {
-      const response = await instance.post(
-        `/admin/jobs/toggle-block/${jobId}`
-      );
+      const response = await instance.post(`/admin/jobs/toggle-block/${jobId}`);
       return response.data;
     } catch (error: any) {
       console.error(
