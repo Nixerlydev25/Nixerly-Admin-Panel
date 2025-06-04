@@ -18,11 +18,11 @@ import { Restrictions } from '@/types/types';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
-  useGetWorkerReport,
-  useToggleBlockWorker,
-} from '@/services/workerReport/worker-report.hook';
+  useGetJobReports,
+  useToggleBlockJob,
+} from '@/services/job-report/job-report.hook';
 
-const WorkerReportManagement: React.FC = () => {
+const JobReportManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [status, setStatus] = useState<string>('');
   const [country, setCountry] = useState<string>('');
@@ -39,8 +39,8 @@ const WorkerReportManagement: React.FC = () => {
   if (status !== '') params.status = status;
   if (country !== '') params.country = country;
 
-  const { data, isFetching, error, refetch } = useGetWorkerReport(params);
-  const { mutate: toggleBlockMutation } = useToggleBlockWorker();
+  const { data, isFetching, error, refetch } = useGetJobReports(params);
+  const { mutate: toggleBlockMutation } = useToggleBlockJob();
 
   const totalCount = data?.pagination.totalCount || 0;
 
@@ -66,13 +66,13 @@ const WorkerReportManagement: React.FC = () => {
     }
   };
 
-  console.log(data?.reports);
+  console.log(data);
 
   return (
     <div className="flex flex-col">
       {/* Page Title */}
       <div className="p-6">
-        <PageTitle route="Worker" subRoute="Worker Report Management" />
+        <PageTitle route="Job Reports" subRoute="Job Report Management" />
       </div>
 
       {/* Separator */}
@@ -108,14 +108,11 @@ const WorkerReportManagement: React.FC = () => {
             data={data?.reports || []}
             columns={[
               {
-                key: 'targetWorker',
-                label: 'Worker Name',
-                render: (report) =>
-                  `${report.targetWorker.user.firstName} ${report.targetWorker.user.lastName}`,
+                key: 'job',
+                label: 'Job Title',
+                render: (report) => `${report.job.title}`,
                 onClick: (report) => {
-                  router.push(
-                    `/dashboard/worker-report-management/${report.id}`
-                  );
+                  router.push(`/dashboard/job-report-management/${report.id}`);
                 },
               },
               {
@@ -187,14 +184,14 @@ const WorkerReportManagement: React.FC = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem
+                  {/* <DropdownMenuItem
                     className="cursor-pointer"
                     onClick={() => {
-                      toggleBlockMutation({ workerId: user.targetWorker.id });
+                      toggleBlockMutation(user.id);
                     }}
                   >
-                    {user.targetWorker.isBlocked ? 'Unblock' : 'Block'}
-                  </DropdownMenuItem>
+                    {user.isBlocked ? 'Unblock' : 'Block'}
+                  </DropdownMenuItem> */}
                   {/* <DropdownMenuItem
                     className="cursor-pointer"
                     onClick={() => console.log("Delete", user)}
@@ -211,4 +208,4 @@ const WorkerReportManagement: React.FC = () => {
   );
 };
 
-export default WorkerReportManagement;
+export default JobReportManagement;

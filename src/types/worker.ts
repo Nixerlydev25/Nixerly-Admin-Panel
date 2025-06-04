@@ -1,9 +1,11 @@
+import { TUser } from './business';
+
 export interface WorkerUser {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
-  role: "WORKER";
+  role: 'WORKER';
   workerProfile: WorkerProfile;
 }
 
@@ -55,7 +57,7 @@ export interface WorkerProfile {
   createdAt: string;
   updatedAt: string;
   totalEarnings: number;
-  onboardingStep: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
+  onboardingStep: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED';
   skills: string[];
   experience: WorkerExperience[];
   education: WorkerEducation[];
@@ -63,6 +65,7 @@ export interface WorkerProfile {
   certificates: Record<string, unknown>;
   portfolio: Record<string, unknown>;
   isVerified: boolean;
+  user: TUser;
 }
 
 export interface WorkerProfileResponse {
@@ -78,7 +81,7 @@ export interface WorkerProfileResponse {
   totalEarnings: number;
   completedJobs: number;
   avgRating: number;
-  onboardingStep: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
+  onboardingStep: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED';
   skills: string[];
   experience: WorkerExperience[];
   education: WorkerEducation[];
@@ -95,7 +98,7 @@ export interface WorkerProfileResponse {
     isVerified: boolean;
     isDeleted: boolean;
     isSuspended: boolean;
-    role: "WORKER";
+    role: 'WORKER';
     provider: string;
     defaultProfile: string;
     firstTimeLogin: boolean;
