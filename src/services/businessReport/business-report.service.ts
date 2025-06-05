@@ -4,34 +4,37 @@ export default class BusinessReportService {
   static async fetchBusinessReports({
     pageParam = 1,
     search,
-    limit = 1,
-    status,
-    country,
+    limit = 10,
+    startDate,
+    endDate,
   }: {
     pageParam?: number;
     search?: string;
     limit?: number;
-    status?: string;
-    country?: string;
+    startDate?: string;
+    endDate?: string;
   }) {
     try {
+      const params: Record<string, any> = {
+        page: pageParam,
+        limit,
+      };
+
+      if (search) params.search = search;
+      if (startDate) params.startDate = startDate;
+      if (endDate) params.endDate = endDate;
+
       const response = await instance.get(`/admin/report/get-business-reports`, {
-        params: {
-          page: pageParam,
-          limit,
-          search,
-          status,
-          country,
-        },
+        params,
       });
       return response.data.data;
     } catch (error: any) {
       console.error(
-        'Error fetching workers:',
+        'Error fetching business reports:',
         error?.response?.data?.message || error.message
       );
       throw new Error(
-        error?.response?.data?.message || 'Failed to fetch workers'
+        error?.response?.data?.message || 'Failed to fetch business reports'
       );
     }
   }
@@ -55,8 +58,8 @@ export default class BusinessReportService {
 
   static async toggleBlockBusiness(businessId: string) {
     try {
-      const response = await instance.post(
-        `/admin/report/toggle-block-business-by-report/${businessId}`
+      const response = await instance.patch(
+        `/admin/business/toggle-block/${businessId}`
       );
       return response.data;
     } catch (error: any) {

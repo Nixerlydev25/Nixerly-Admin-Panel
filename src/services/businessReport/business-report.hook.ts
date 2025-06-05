@@ -1,32 +1,32 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import BusinessReportService from './business-report.service';
 import {
+  BusinessReport,
   BusinessReportResponse,
-  TBusinessReport,
 } from '@/types/business-report.type';
 
 export const useFetchBusinessReports = ({
   page = 1,
   limit = 10,
-  search = '',
-  status = '',
-  country = '',
+  search,
+  startDate,
+  endDate,
 }: {
   page?: number;
   limit?: number;
   search?: string;
-  status?: string;
-  country?: string;
+  startDate?: string;
+  endDate?: string;
 }) => {
   return useQuery<BusinessReportResponse>({
-    queryKey: ['businessReports', { page, limit, search, status, country }],
+    queryKey: ['businessReports', { page, limit, search, startDate, endDate }],
     queryFn: () =>
       BusinessReportService.fetchBusinessReports({
         pageParam: page,
         search,
         limit,
-        status,
-        country,
+        startDate,
+        endDate,
       }),
   });
 };
@@ -36,7 +36,7 @@ export const useGetBusinessReportById = ({
 }: {
   businessId: string;
 }) => {
-  return useQuery<{ data: TBusinessReport; message: string }>({
+  return useQuery<{ data: BusinessReport; message: string }>({
     queryKey: ['businessReportById', { businessId }],
     queryFn: () => BusinessReportService.getBusinessById(businessId),
   });

@@ -2,21 +2,27 @@ import instance from '../api';
 
 export default class JobReportsService {
   static async getJobReports({
-    page,
-    limit,
+    page = 1,
+    limit = 10,
     search,
-    status,
-    country,
+    startDate,
+    endDate,
   }: {
-    page: number;
-    limit: number;
-    search: string;
-    status: string;
-    country: string;
+    page?: number;
+    limit?: number;
+    search?: string;
+    startDate?: string;
+    endDate?: string;
   }) {
     try {
       const response = await instance.get('/admin/report/get-job-reports', {
-        params: { page, limit, search, status, country },
+        params: {
+          page: String(page),
+          limit: String(limit),
+          search,
+          startDate,
+          endDate,
+        },
       });
       return response.data.data;
     } catch (error) {
@@ -34,10 +40,11 @@ export default class JobReportsService {
       throw error;
     }
   }
+
   static async toggleBlockJob(id: string) {
     try {
-      const response = await instance.post(
-        `/admin/report/toggle-block-job-by-report/${id}`
+      const response = await instance.patch(
+        `/admin/jobs/toggle-block/${id}`
       );
       return response.data;
     } catch (error) {

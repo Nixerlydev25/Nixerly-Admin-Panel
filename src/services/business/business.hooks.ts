@@ -11,22 +11,25 @@ export function usePaginatedBusiness({
   search,
   limit,
   status,
-  country,
+  startDate,
+  endDate,
 }: {
   page: number;
   search?: string;
   limit?: number;
   status?: string;
-  country?: string;
+  startDate?: string;
+  endDate?: string;
 }) {
   const { data, isFetching, error, refetch } = useQuery<BusinessListResponse>({
-    queryKey: ['businesses', { page, search, status, country, limit }],
+    queryKey: ['businesses', { page, search, status, startDate, endDate, limit }],
     queryFn: async () =>
       BusinessService.fetchBusinesses({
         pageParam: page,
         search,
         status,
-        country,
+        startDate,
+        endDate,
         limit,
       }),
   });

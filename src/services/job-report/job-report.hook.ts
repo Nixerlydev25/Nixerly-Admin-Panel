@@ -6,19 +6,19 @@ export const useGetJobReports = ({
   page,
   limit,
   search,
-  status,
-  country,
+  startDate,
+  endDate,
 }: {
-  page: number;
-  limit: number;
-  search: string;
-  status: string;
-  country: string;
-}) => {
+  page?: number;
+  limit?: number;
+  search?: string;
+  startDate?: string;
+  endDate?: string;
+} = {}) => {
   return useQuery<JobReportResponse>({
-    queryKey: ['job-reports', { page, limit, search, status, country }],
+    queryKey: ['job-reports', { page, limit, search, startDate, endDate }],
     queryFn: () =>
-      JobReportsService.getJobReports({ page, limit, search, status, country }),
+      JobReportsService.getJobReports({ page, limit, search, startDate, endDate }),
   });
 };
 

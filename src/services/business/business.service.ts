@@ -6,13 +6,15 @@ export default class BusinessService {
     search,
     limit = 10,
     status,
-    country,
+    startDate,
+    endDate,
   }: {
     pageParam?: number;
     search?: string;
     limit?: number;
     status?: string;
-    country?: string;
+    startDate?: string;
+    endDate?: string;
   }) {
     try {
       const params: Record<string, any> = {
@@ -22,7 +24,8 @@ export default class BusinessService {
 
       if (search) params.search = search;
       if (status) params.status = status;
-      if (country) params.country = country;
+      if (startDate) params.startDate = startDate;
+      if (endDate) params.endDate = endDate;
 
       const response = await instance.get(
         `/admin/business/get-all-businesses`,
