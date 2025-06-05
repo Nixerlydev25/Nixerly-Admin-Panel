@@ -1,5 +1,4 @@
 import { WorkerProfile } from './worker';
-import { TBusinessProfile } from './business';
 
 export interface TJob {
   id: string;
@@ -8,9 +7,9 @@ export interface TJob {
   requirements: string;
   employmentType: string;
   numberOfPositions: number;
-  budget: number;
-  hourlyRateMin: number | null;
-  hourlyRateMax: number | null;
+  budget: number | null;
+  hourlyRateMin: number;
+  hourlyRateMax: number;
   salary: number | null;
   businessProfileId: string;
   status: string;
@@ -21,21 +20,43 @@ export interface TJob {
   updatedAt: string;
   expiresAt: string | null;
   isBlocked: boolean;
+  businessProfile: {
+    companyName: string;
+    user: {
+      email: string;
+    };
+  };
+  skills: Array<{
+    id: string;
+    jobId: string;
+    skillName: string;
+    createdAt: string;
+  }>;
+  location: {
+    id: string;
+    jobId: string;
+    street: string | null;
+    city: string;
+    state: string;
+    country: string;
+    postalCode: string | null;
+    isRemote: boolean;
+  };
 }
+
+export interface TWorker extends WorkerProfile {}
 
 export interface TJobReport {
   id: string;
-  targetJobId: string;
+  reportedJobId: string;
   reporterWorkerId: string;
-  reporterBusinessId: string | null;
   reason: string;
-  category: string;
+  description: string;
   status: string;
   createdAt: string;
   updatedAt: string;
-  reporterWorker: WorkerProfile;
-  reporterBusiness: TBusinessProfile | null;
-  job: TJob;
+  reportedJob: TJob;
+  reporterWorker: TWorker;
 }
 
 export interface JobReportPagination {
@@ -48,4 +69,14 @@ export interface JobReportPagination {
 export interface JobReportResponse {
   reports: TJobReport[];
   pagination: JobReportPagination;
+}
+
+// Extended types for the job report details page
+export interface ExtendedWorkerProfile extends TWorker {}
+
+export interface ExtendedJobReport extends TJobReport {
+  category?: 'ILLEGAL' | 'SPAM' | 'INAPPROPRIATE' | 'MISLEADING_DESCRIPTION';
+  reporterBusiness?: {
+    companyName: string;
+  };
 }

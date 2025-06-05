@@ -44,28 +44,48 @@ export interface WorkerLanguage {
 
 export interface WorkerProfile {
   id: string;
+  userId: string;
   title: string;
+  phoneNumber?: string;
   description: string;
-  hourlyRate: number;
-  availability: boolean;
   city: string;
   state: string;
   country: string;
-  profilePicture: string;
-  avgRating: number;
-  completedJobs: number;
   createdAt: string;
   updatedAt: string;
+  hourlyRate: number;
+  availability: boolean;
   totalEarnings: number;
-  onboardingStep: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED';
-  skills: string[];
-  experience: WorkerExperience[];
-  education: WorkerEducation[];
-  languages: WorkerLanguage[];
-  certificates: Record<string, unknown>;
-  portfolio: Record<string, unknown>;
-  isVerified: boolean;
-  user: TUser;
+  completedJobs: number;
+  avgRating: number;
+  onboardingStep: string;
+  isBlocked: boolean;
+  lastActive: string;
+  user: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    createdAt: string;
+  };
+  skills: Array<{
+    id: string;
+    workerId: string;
+    skillName: string;
+    createdAt: string;
+  }>;
+  experience: Array<{
+    id: string;
+    workerId: string;
+    title: string;
+    company: string;
+    country: string;
+    city: string;
+    state: string;
+    startDate: string;
+    endDate: string | null;
+    currentlyWorking: boolean;
+    description: string;
+  }>;
 }
 
 export interface WorkerProfileResponse {

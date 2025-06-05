@@ -55,9 +55,7 @@ export default class WorkerReportService {
 
   static async toggleBlockWorker(workerId: string) {
     try {
-      const response = await instance.post(
-        `/admin/report/toggle-block-worker-by-report/${workerId}`
-      );
+      const response = await instance.patch(`/admin/worker/toggle-block/${workerId}`);
       return response.data;
     } catch (error: any) {
       console.error(

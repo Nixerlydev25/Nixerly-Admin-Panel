@@ -49,17 +49,26 @@ export interface WorkerReportTarget {
 
 export interface WorkerReport {
   id: string;
-  targetWorkerId: string;
-  reporterWorkerId: string | null;
+  reportedWorkerId: string;
   reporterBusinessId: string;
   reason: string;
-  category: string;
+  description: string;
   status: 'PENDING' | 'RESOLVED' | 'REJECTED' | 'UNDER_REVIEW';
   createdAt: string;
   updatedAt: string;
-  reporterWorker?: WorkerReportTarget;
-  reporterBusiness: WorkerReportBusiness;
-  targetWorker: WorkerReportTarget;
+  reportedWorker: {
+    user: {
+      firstName: string;
+      lastName: string;
+      email: string;
+    }
+  };
+  reporterBusiness: {
+    companyName: string;
+    user: {
+      email: string;
+    }
+  };
 }
 
 export interface WorkerReportPagination {
