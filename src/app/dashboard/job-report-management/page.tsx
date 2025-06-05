@@ -12,20 +12,17 @@ import {
 import { Button } from '@/components/ui/button';
 import PageTitle from '@/components/PageTitle';
 import { Separator } from '@/components/ui/separator';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useRestrictionMutations } from '@/services/restrictions';
-import { Restrictions } from '@/types/types';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   useGetJobReports,
   useToggleBlockJob,
 } from '@/services/job-report/job-report.hook';
+import { DateRange } from 'react-day-picker';
 
 const JobReportManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [status, setStatus] = useState<string>('');
-  const [country, setCountry] = useState<string>('');
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const router = useRouter();
   const itemsPerPage = 10;
@@ -33,64 +30,40 @@ const JobReportManagement: React.FC = () => {
   const params: any = {
     page: currentPage,
     limit: itemsPerPage,
+    search: searchQuery || undefined,
+    startDate: dateRange?.from?.toISOString(),
+    endDate: dateRange?.to?.toISOString(),
   };
 
-  if (searchQuery !== '') params.search = searchQuery;
-  if (status !== '') params.status = status;
-  if (country !== '') params.country = country;
-
-  const { data, isFetching, error, refetch } = useGetJobReports(params);
+  const { data, isFetching, refetch } = useGetJobReports(params);
   const { mutate: toggleBlockMutation } = useToggleBlockJob();
-
-  const totalCount = data?.pagination.totalCount || 0;
 
   const resetFilters = () => {
     setSearchQuery('');
-    setStatus('');
-    setCountry('');
+    setDateRange(undefined);
     setCurrentPage(1);
     refetch();
   };
 
-  const { addRestriction, removeRestriction } = useRestrictionMutations();
-
-  const toggleRestriction = (
-    userId: string,
-    restrictionType: string,
-    isRestricted: boolean
-  ) => {
-    if (isRestricted) {
-      removeRestriction.mutate({ userId, restrictionType });
-    } else {
-      addRestriction.mutate({ userId, restrictionType });
-    }
-  };
-
-  console.log(data);
-
   return (
     <div className="flex flex-col">
-      {/* Page Title */}
       <div className="p-6">
         <PageTitle route="Job Reports" subRoute="Job Report Management" />
       </div>
 
-      {/* Separator */}
       <Separator className="h-[2px] w-full" />
 
-      {/* Filters Section */}
       <Filters
         searchPlaceHolder="Search by username or email"
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
-        status={status}
-        onStatusChange={setStatus}
-        country={country}
-        onCountryChange={setCountry}
+        // status={status}
+        // onStatusChange={setStatus}
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
         onResetFilters={resetFilters}
       />
 
-      {/* Data Table Section */}
       <div className="p-6">
         {data?.reports?.length === 0 ? (
           <div className="py-4 text-center text-gray-500">
@@ -108,35 +81,33 @@ const JobReportManagement: React.FC = () => {
             data={data?.reports || []}
             columns={[
               {
-                key: 'job',
+                key: 'reportedJob',
                 label: 'Job Title',
-                render: (report) => `${report.job.title}`,
+                render: (report) => report.reportedJob.title,
                 onClick: (report) => {
                   router.push(`/dashboard/job-report-management/${report.id}`);
                 },
               },
               {
-                key: 'reporterBusiness',
-                label: 'Reporter Business',
-                render: (report) => report.reporterBusiness?.companyName || '-',
+                key: 'reportedJob',
+                label: 'Business',
+                render: (report) => report.reportedJob.businessProfile.companyName,
               },
               {
                 key: 'reporterWorker',
-                label: 'Reporter Worker',
+                label: 'Reporter',
                 render: (report) =>
-                  report.reporterWorker
-                    ? `${report.reporterWorker.user.firstName} ${report.reporterWorker.user.lastName}`
-                    : '-',
-              },
-              {
-                key: 'category',
-                label: 'Category',
-                render: (report) => report.category,
+                  `${report.reporterWorker.user.firstName} ${report.reporterWorker.user.lastName}`,
               },
               {
                 key: 'reason',
                 label: 'Reason',
                 render: (report) => report.reason,
+              },
+              {
+                key: 'description',
+                label: 'Description',
+                render: (report) => report.description,
               },
               {
                 key: 'status',
@@ -147,8 +118,8 @@ const JobReportManagement: React.FC = () => {
                       report.status === 'PENDING'
                         ? 'bg-yellow-100 text-yellow-600'
                         : report.status === 'RESOLVED'
-                          ? 'bg-green-100 text-green-600'
-                          : 'bg-red-100 text-red-600'
+                        ? 'bg-green-100 text-green-600'
+                        : 'bg-red-100 text-red-600'
                     }`}
                   >
                     {report.status}
@@ -157,11 +128,11 @@ const JobReportManagement: React.FC = () => {
               },
             ]}
             totalCount={data?.pagination?.totalCount || 0}
-            itemsPerPage={10}
-            currentPage={data?.pagination?.currentPage || 0}
+            itemsPerPage={itemsPerPage}
+            currentPage={data?.pagination?.currentPage || 1}
             onPageChange={setCurrentPage}
             isFetching={isFetching}
-            renderRowActions={(user) => (
+            renderRowActions={(report) => (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost">
@@ -184,20 +155,14 @@ const JobReportManagement: React.FC = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  {/* <DropdownMenuItem
+                  <DropdownMenuItem
                     className="cursor-pointer"
                     onClick={() => {
-                      toggleBlockMutation(user.id);
+                      toggleBlockMutation(report.reportedJobId);
                     }}
                   >
-                    {user.isBlocked ? 'Unblock' : 'Block'}
-                  </DropdownMenuItem> */}
-                  {/* <DropdownMenuItem
-                    className="cursor-pointer"
-                    onClick={() => console.log("Delete", user)}
-                  >
-                    Block
-                  </DropdownMenuItem> */}
+                    Block Job
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             )}

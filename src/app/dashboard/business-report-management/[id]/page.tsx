@@ -33,30 +33,9 @@ import {
 } from '@/services/businessReport/business-report.hook';
 import { useParams, useRouter } from 'next/navigation';
 import BusinessReportSkeleton from '@/components/custom/Reports/business-report-skeleton';
-import { TBusinessReport } from '@/types/business-report.type';
+import type { BusinessReport as IBusinessReport } from '@/types/business-report.type';
+import { BusinessReportResponse } from '@/types/business-report.type';
 import PageTitle from '@/components/PageTitle';
-
-interface BusinessProfile {
-  id: string;
-  companyName: string;
-  industry: string;
-  [key: string]: any;
-}
-
-interface BusinessReport {
-  id: string;
-  targetBusinessId: string;
-  reporterWorkerId: string | null;
-  reporterBusinessId: string | null;
-  reason: string;
-  category: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  reporterWorker?: any;
-  reporterBusiness: BusinessProfile | null;
-  targetBusiness: BusinessProfile;
-}
 
 enum ReportStatus {
   PENDING = 'PENDING',
@@ -77,6 +56,7 @@ const BusinessReportDetails: React.FC = () => {
   } = useGetBusinessReportById({
     businessId: id as string,
   });
+  console.log(reportData)
 
   const { mutate: toggleBlockBusiness } = useToggleBlockBusiness();
 
@@ -92,7 +72,7 @@ const BusinessReportDetails: React.FC = () => {
     return <div>No data found</div>;
   }
 
-  const data: TBusinessReport = reportData.data;
+  const data: IBusinessReport = reportData.data;
   console.log(reportData);
 
   if (data.status && currentStatus !== data.status) {
@@ -166,8 +146,8 @@ const BusinessReportDetails: React.FC = () => {
             <Badge className={`${getStatusColor(currentStatus)} border`}>
               {currentStatus}
             </Badge>
-            <Badge className={`${getCategoryColor(data.category)} border`}>
-              {data.category}
+            <Badge className={`${getCategoryColor(data.reason)} border`}>
+              {data.reason}
             </Badge>
           </div>
         </div>
@@ -196,7 +176,7 @@ const BusinessReportDetails: React.FC = () => {
                       Target Business ID
                     </label>
                     <p className="text-sm text-gray-900 font-mono">
-                      {data.targetBusinessId}
+                      {data.reportedBusinessId}
                     </p>
                   </div>
                   <div>
@@ -317,13 +297,6 @@ const BusinessReportDetails: React.FC = () => {
                     </div>
                   </div>
                 )}
-                {data.reporterBusiness && (
-                  <div>
-                    <p className="text-sm text-gray-900">
-                      Business Reporter: {data.reporterBusiness?.companyName}
-                    </p>
-                  </div>
-                )}
               </CardContent>
             </Card>
 
@@ -342,7 +315,7 @@ const BusinessReportDetails: React.FC = () => {
                       Company Name
                     </label>
                     <p className="text-sm text-gray-900 font-semibold">
-                      {data.targetBusiness.companyName}
+                      {data.reportedBusiness.companyName}
                     </p>
                   </div>
                   <div>
@@ -350,7 +323,7 @@ const BusinessReportDetails: React.FC = () => {
                       Industry
                     </label>
                     <p className="text-sm text-gray-900 capitalize">
-                      {data.targetBusiness.industry}
+                      {data.reportedBusiness.industry}
                     </p>
                   </div>
                   <div>
@@ -358,8 +331,8 @@ const BusinessReportDetails: React.FC = () => {
                       Owner Name
                     </label>
                     <p className="text-sm text-gray-900">
-                      {data.targetBusiness.user.firstName}{' '}
-                      {data.targetBusiness.user.lastName}
+                      {data.reportedBusiness.user.firstName}{' '}
+                      {data.reportedBusiness.user.lastName}
                     </p>
                   </div>
                   <div>
@@ -368,7 +341,7 @@ const BusinessReportDetails: React.FC = () => {
                     </label>
                     <p className="text-sm text-gray-900 flex items-center gap-1">
                       <MailIcon className="h-4 w-4" />
-                      {data.targetBusiness.user.email}
+                      {data.reportedBusiness.user.email}
                     </p>
                   </div>
                   <div>
@@ -377,7 +350,7 @@ const BusinessReportDetails: React.FC = () => {
                     </label>
                     <p className="text-sm text-gray-900 flex items-center gap-1">
                       <PhoneIcon className="h-4 w-4" />
-                      {data.targetBusiness.phoneNumber || 'Not provided'}
+                      {data.reportedBusiness.phoneNumber || 'Not provided'}
                     </p>
                   </div>
                   <div>
@@ -386,8 +359,8 @@ const BusinessReportDetails: React.FC = () => {
                     </label>
                     <p className="text-sm text-gray-900 flex items-center gap-1">
                       <MapPinIcon className="h-4 w-4" />
-                      {data.targetBusiness.city}, {data.targetBusiness.state},{' '}
-                      {data.targetBusiness.country}
+                      {data.reportedBusiness.city}, {data.reportedBusiness.state},{' '}
+                      {data.reportedBusiness.country}
                     </p>
                   </div>
                   <div>
@@ -396,7 +369,7 @@ const BusinessReportDetails: React.FC = () => {
                     </label>
                     <p className="text-sm text-gray-900 flex items-center gap-1">
                       <GlobeIcon className="h-4 w-4" />
-                      {data.targetBusiness.website || 'Not provided'}
+                      {data.reportedBusiness.website || 'Not provided'}
                     </p>
                   </div>
                   <div>
@@ -405,7 +378,7 @@ const BusinessReportDetails: React.FC = () => {
                     </label>
                     <p className="text-sm text-gray-900 flex items-center gap-1">
                       <UsersIcon className="h-4 w-4" />
-                      {data.targetBusiness.employeeCount} employees
+                      {data.reportedBusiness.employeeCount} employees
                     </p>
                   </div>
                   <div>
@@ -413,7 +386,7 @@ const BusinessReportDetails: React.FC = () => {
                       Year Founded
                     </label>
                     <p className="text-sm text-gray-900">
-                      {data.targetBusiness.yearFounded}
+                      {data.reportedBusiness.yearFounded}
                     </p>
                   </div>
                   <div>
@@ -422,7 +395,7 @@ const BusinessReportDetails: React.FC = () => {
                     </label>
                     <p className="text-sm text-gray-900 flex items-center gap-1">
                       <DollarSignIcon className="h-4 w-4" />$
-                      {data.targetBusiness.totalSpent}
+                      {data.reportedBusiness.totalSpent}
                     </p>
                   </div>
                   <div>
@@ -431,7 +404,7 @@ const BusinessReportDetails: React.FC = () => {
                     </label>
                     <p className="text-sm text-gray-900 flex items-center gap-1">
                       <BriefcaseIcon className="h-4 w-4" />
-                      {data.targetBusiness.postedJobs} jobs
+                      {data.reportedBusiness.postedJobs} jobs
                     </p>
                   </div>
                   <div className="flex items-start gap-1 flex-col">
@@ -440,12 +413,12 @@ const BusinessReportDetails: React.FC = () => {
                     </label>
                     <Badge
                       variant={
-                        data.targetBusiness.isBlocked
+                        data.reportedBusiness.isBlocked
                           ? 'destructive'
                           : 'default'
                       }
                     >
-                      {data.targetBusiness.isBlocked ? 'Blocked' : 'Active'}
+                      {data.reportedBusiness.isBlocked ? 'Blocked' : 'Active'}
                     </Badge>
                   </div>
                   <div className="flex items-start gap-1 flex-col">
@@ -453,7 +426,7 @@ const BusinessReportDetails: React.FC = () => {
                       Onboarding Status
                     </label>
                     <Badge variant="outline">
-                      {data.targetBusiness.onboardingStep}
+                      {data.reportedBusiness.onboardingStep}
                     </Badge>
                   </div>
                   <div>
@@ -461,7 +434,7 @@ const BusinessReportDetails: React.FC = () => {
                       Last Active
                     </label>
                     <p className="text-sm text-gray-900">
-                      {formatDate(data.targetBusiness.lastActive)}
+                      {formatDate(data.reportedBusiness.lastActive)}
                     </p>
                   </div>
                 </div>
@@ -471,7 +444,7 @@ const BusinessReportDetails: React.FC = () => {
                     Business Description
                   </label>
                   <p className="text-sm text-gray-900 mt-1 p-3 bg-gray-50 rounded-md">
-                    {data.targetBusiness.description}
+                    {data.reportedBusiness.description}
                   </p>
                 </div>
               </CardContent>
@@ -522,7 +495,7 @@ const BusinessReportDetails: React.FC = () => {
                   variant="outline"
                   onClick={() =>
                     router.push(
-                      `/dashboard/business-management/${data.targetBusiness.id}`
+                      `/dashboard/business-management/${data.reportedBusiness.id}`
                     )
                   }
                 >
@@ -540,11 +513,11 @@ const BusinessReportDetails: React.FC = () => {
                   variant="destructive"
                   onClick={() => {
                     toggleBlockBusiness({
-                      businessId: data.id,
+                      businessId: data.reportedBusiness.id,
                     });
                   }}
                 >
-                  {data.targetBusiness.isBlocked ? 'Unblock Business' : 'Block Business'}
+                  {data.reportedBusiness.isBlocked ? 'Unblock Business' : 'Block Business'}
                 </Button>
                 {/* <Button className="w-full" variant="destructive">
                 Suspend Business Account
@@ -559,35 +532,31 @@ const BusinessReportDetails: React.FC = () => {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Total Reports</span>
-                  <span className="text-sm font-medium">1</span>
-                </div>
-                <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Posted Jobs</span>
                   <span className="text-sm font-medium">
-                    {data.targetBusiness.postedJobs}
+                    {data.reportedBusiness.postedJobs}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Total Spent</span>
                   <span className="text-sm font-medium">
-                    ${data.targetBusiness.totalSpent}
+                    ${data.reportedBusiness.totalSpent}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Employee Count</span>
                   <span className="text-sm font-medium">
-                    {data.targetBusiness.employeeCount}
+                    {data.reportedBusiness.employeeCount}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Account Status</span>
                   <Badge
                     variant={
-                      data.targetBusiness.isBlocked ? 'destructive' : 'default'
+                      data.reportedBusiness.isBlocked ? 'destructive' : 'default'
                     }
                   >
-                    {data.targetBusiness.isBlocked ? 'Blocked' : 'Active'}
+                    {data.reportedBusiness.isBlocked ? 'Blocked' : 'Active'}
                   </Badge>
                 </div>
               </CardContent>

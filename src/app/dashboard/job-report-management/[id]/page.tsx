@@ -29,30 +29,17 @@ import {
   useGetJobReportById,
   useToggleBlockJob,
 } from '@/services/job-report/job-report.hook';
-import { TJobReport } from '@/types/job-report.types';
-import { WorkerProfile } from '@/types/worker';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-
-interface ExtendedWorkerProfile extends WorkerProfile {
-  phoneNumber?: string;
-  isBlocked?: boolean;
-}
-
-interface ExtendedJobReport extends Omit<TJobReport, 'reporterWorker'> {
-  reporterWorker: ExtendedWorkerProfile;
-}
-
-enum ReportStatus {
-  PENDING = 'PENDING',
-  RESOLVED = 'RESOLVED',
-  REJECTED = 'REJECTED',
-  UNDER_REVIEW = 'UNDER_REVIEW',
-}
+import {
+  JobReport,
+  ReportStatus,
+  ReportReason
+} from '@/types/job-report-management';
 
 const JobReportDetails: React.FC = () => {
   const { id } = useParams();
-  const [currentStatus, setCurrentStatus] = useState('PENDING');
+  const [currentStatus, setCurrentStatus] = useState<ReportStatus>(ReportStatus.PENDING);
   const router = useRouter();
 
   const {
@@ -75,29 +62,31 @@ const JobReportDetails: React.FC = () => {
     return <div>No data found</div>;
   }
 
-  const data: ExtendedJobReport = reportData.data;
+  const data: JobReport = reportData.data;
 
   if (data.status && currentStatus !== data.status) {
-    setCurrentStatus(data.status);
+    setCurrentStatus(data.status as ReportStatus);
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'PENDING':
+      case ReportStatus.PENDING:
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'RESOLVED':
+      case ReportStatus.RESOLVED:
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'REJECTED':
+      case ReportStatus.REJECTED:
         return 'bg-red-100 text-red-800 border-red-200';
-      case 'UNDER_REVIEW':
+      case ReportStatus.UNDER_REVIEW:
         return 'bg-blue-100 text-blue-800 border-blue-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
+  const getCategoryColor = (reason: ReportReason) => {
+    switch (reason) {
+      case 'MISLEADING_DESCRIPTION':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'ILLEGAL':
         return 'bg-red-100 text-red-800 border-red-200';
       case 'SPAM':
@@ -120,7 +109,7 @@ const JobReportDetails: React.FC = () => {
   };
 
   const handleStatusUpdate = (newStatus: string) => {
-    setCurrentStatus(newStatus);
+    setCurrentStatus(newStatus as ReportStatus);
     // Here you would typically make an API call to update the status
     console.log('Updating status to:', newStatus);
   };
@@ -145,8 +134,8 @@ const JobReportDetails: React.FC = () => {
             <Badge className={`${getStatusColor(currentStatus)} border`}>
               {currentStatus}
             </Badge>
-            <Badge className={`${getCategoryColor(data.category)} border`}>
-              {data.category}
+            <Badge className={`${getCategoryColor(data.reason as ReportReason)} border`}>
+              {data.reason}
             </Badge>
           </div>
         </div>
@@ -175,7 +164,7 @@ const JobReportDetails: React.FC = () => {
                       Target Job ID
                     </label>
                     <p className="text-sm text-gray-900 font-mono">
-                      {data.targetJobId}
+                      {data.reportedJobId}
                     </p>
                   </div>
                   <div>
@@ -296,13 +285,6 @@ const JobReportDetails: React.FC = () => {
                     </div>
                   </div>
                 )}
-                {data.reporterBusiness && (
-                  <div>
-                    <p className="text-sm text-gray-900">
-                      Business Reporter: {data.reporterBusiness.companyName}
-                    </p>
-                  </div>
-                )}
               </CardContent>
             </Card>
 
@@ -321,21 +303,21 @@ const JobReportDetails: React.FC = () => {
                       Job Title
                     </label>
                     <p className="text-sm text-gray-900 font-semibold">
-                      {data.job.title}
+                      {data.reportedJob.title}
                     </p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-500">
                       Job Type
                     </label>
-                    <p className="text-sm text-gray-900">{data.job.jobType}</p>
+                    <p className="text-sm text-gray-900">{data.reportedJob.jobType}</p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-500">
                       Employment Type
                     </label>
                     <p className="text-sm text-gray-900">
-                      {data.job.employmentType}
+                      {data.reportedJob.employmentType}
                     </p>
                   </div>
                   <div>
@@ -343,7 +325,7 @@ const JobReportDetails: React.FC = () => {
                       Budget
                     </label>
                     <p className="text-sm text-gray-900 flex items-center gap-1">
-                      <DollarSignIcon className="h-4 w-4" />${data.job.budget}
+                      <DollarSignIcon className="h-4 w-4" />${data.reportedJob.budget}
                     </p>
                   </div>
                   <div>
@@ -351,7 +333,7 @@ const JobReportDetails: React.FC = () => {
                       Positions Available
                     </label>
                     <p className="text-sm text-gray-900">
-                      {data.job.numberOfPositions}
+                      {data.reportedJob.numberOfPositions}
                     </p>
                   </div>
                   <div>
@@ -359,7 +341,7 @@ const JobReportDetails: React.FC = () => {
                       Workers Required
                     </label>
                     <p className="text-sm text-gray-900">
-                      {data.job.numberOfWorkersRequired}
+                      {data.reportedJob.numberOfWorkersRequired}
                     </p>
                   </div>
                   <div>
@@ -367,7 +349,7 @@ const JobReportDetails: React.FC = () => {
                       Start Date
                     </label>
                     <p className="text-sm text-gray-900">
-                      {formatDate(data.job.startDate)}
+                      {formatDate(data.reportedJob.startDate)}
                     </p>
                   </div>
                   <div className="flex items-start gap-1 flex-col">
@@ -376,14 +358,14 @@ const JobReportDetails: React.FC = () => {
                     </label>
                     <Badge
                       variant={
-                        data.job.isBlocked
+                        data.reportedJob.isBlocked
                           ? 'destructive'
-                          : data.job.status === 'OPEN'
+                          : data.reportedJob.status === 'OPEN'
                             ? 'default'
                             : 'secondary'
                       }
                     >
-                      {data.job.isBlocked ? 'Blocked' : data.job.status}
+                      {data.reportedJob.isBlocked ? 'Blocked' : data.reportedJob.status}
                     </Badge>
                   </div>
                 </div>
@@ -393,7 +375,7 @@ const JobReportDetails: React.FC = () => {
                     Job Description
                   </label>
                   <p className="text-sm text-gray-900 mt-1 p-3 bg-gray-50 rounded-md whitespace-pre-line">
-                    {data.job.description}
+                    {data.reportedJob.description}
                   </p>
                 </div>
                 <div>
@@ -401,7 +383,7 @@ const JobReportDetails: React.FC = () => {
                     Requirements
                   </label>
                   <p className="text-sm text-gray-900 mt-1 p-3 bg-gray-50 rounded-md whitespace-pre-line">
-                    {data.job.requirements}
+                    {data.reportedJob.requirements}
                   </p>
                 </div>
               </CardContent>
@@ -435,9 +417,6 @@ const JobReportDetails: React.FC = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                {/* <Button className="w-full" variant="outline">
-                  Add Internal Note
-                </Button> */}
               </CardContent>
             </Card>
 
@@ -451,30 +430,21 @@ const JobReportDetails: React.FC = () => {
                   className="w-full"
                   variant="outline"
                   onClick={() => {
-                    router.push(`/dashboard/job-management/${data.job.id}`);
+                    router.push(`/dashboard/job-management/${data.reportedJob.id}`);
                   }}
                 >
                   View Job Details
                 </Button>
-                {/* <Button className="w-full" variant="outline">
-                  Contact Reporter
-                </Button> */}
-                {/* <Button className="w-full" variant="outline">
-                  View Reporter Profile
-                </Button> */}
                 <Separator />
                 <Button
                   className="w-full"
                   variant="destructive"
                   onClick={() => {
-                    toggleBlockJob(data.id);
+                    toggleBlockJob(data.reportedJob.id);
                   }}
                 >
-                  {data.job?.isBlocked ? 'Unblock Job' : 'Block Job'}
+                  {data.reportedJob.isBlocked ? 'Unblock Job' : 'Block Job'}
                 </Button>
-                {/* <Button className="w-full" variant="destructive">
-                  Suspend Reporter
-                </Button> */}
               </CardContent>
             </Card>
 
@@ -485,25 +455,21 @@ const JobReportDetails: React.FC = () => {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Total Reports</span>
-                  <span className="text-sm font-medium">1</span>
-                </div>
-                <div className="flex justify-between">
                   <span className="text-sm text-gray-600">
                     Hourly Rate Range
                   </span>
                   <span className="text-sm font-medium">
-                    {data.job.hourlyRateMax && data.job.hourlyRateMin
-                      ? `$${data.job.hourlyRateMin} - $${data.job.hourlyRateMax}`
+                    {data.reportedJob.hourlyRateMax && data.reportedJob.hourlyRateMin
+                      ? `$${data.reportedJob.hourlyRateMin} - $${data.reportedJob.hourlyRateMax}`
                       : 'N/A'}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Account Status</span>
                   <Badge
-                    variant={data.job?.isBlocked ? 'destructive' : 'default'}
+                    variant={data.reportedJob.isBlocked ? 'destructive' : 'default'}
                   >
-                    {data.job?.isBlocked ? 'Blocked' : 'Active'}
+                    {data.reportedJob.isBlocked ? 'Blocked' : 'Active'}
                   </Badge>
                 </div>
               </CardContent>

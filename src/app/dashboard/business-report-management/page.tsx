@@ -12,61 +12,41 @@ import {
 import { Button } from '@/components/ui/button';
 import PageTitle from '@/components/PageTitle';
 import { Separator } from '@/components/ui/separator';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useRestrictionMutations } from '@/services/restrictions';
-import { Restrictions } from '@/types/types';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   useFetchBusinessReports,
   useToggleBlockBusiness,
 } from '@/services/businessReport/business-report.hook';
+import { format } from 'date-fns';
 
 const BusinessReportManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [status, setStatus] = useState<string>('');
-  const [country, setCountry] = useState<string>('');
+  const [dateRange, setDateRange] = useState<{
+    startDate?: string;
+    endDate?: string;
+  }>({});
   const [currentPage, setCurrentPage] = useState<number>(1);
   const router = useRouter();
   const itemsPerPage = 10;
 
-  const params: any = {
+  const params = {
     page: currentPage,
     limit: itemsPerPage,
+    search: searchQuery || undefined,
+    startDate: dateRange.startDate,
+    endDate: dateRange.endDate,
   };
 
-  if (searchQuery !== '') params.search = searchQuery;
-  if (status !== '') params.status = status;
-  if (country !== '') params.country = country;
-
-  const { data, isFetching, error, refetch } = useFetchBusinessReports(params);
+  const { data, isFetching, refetch } = useFetchBusinessReports(params);
   const { mutate: toggleBlockMutation } = useToggleBlockBusiness();
-
-  const totalCount = data?.pagination.totalCount || 0;
 
   const resetFilters = () => {
     setSearchQuery('');
-    setStatus('');
-    setCountry('');
+    setDateRange({});
     setCurrentPage(1);
     refetch();
   };
-
-  const { addRestriction, removeRestriction } = useRestrictionMutations();
-
-  const toggleRestriction = (
-    userId: string,
-    restrictionType: string,
-    isRestricted: boolean
-  ) => {
-    if (isRestricted) {
-      removeRestriction.mutate({ userId, restrictionType });
-    } else {
-      addRestriction.mutate({ userId, restrictionType });
-    }
-  };
-
-  console.log(data?.reports);
 
   return (
     <div className="flex flex-col">
@@ -80,13 +60,19 @@ const BusinessReportManagement: React.FC = () => {
 
       {/* Filters Section */}
       <Filters
-        searchPlaceHolder="Search by username or email"
+        searchPlaceHolder="Search by business name or email"
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
-        status={status}
-        onStatusChange={setStatus}
-        country={country}
-        onCountryChange={setCountry}
+        dateRange={{
+          from: dateRange.startDate ? new Date(dateRange.startDate) : undefined,
+          to: dateRange.endDate ? new Date(dateRange.endDate) : undefined,
+        }}
+        onDateRangeChange={(range) =>
+          setDateRange({
+            startDate: range?.from?.toISOString(),
+            endDate: range?.to?.toISOString(),
+          })
+        }
         onResetFilters={resetFilters}
       />
 
@@ -108,9 +94,9 @@ const BusinessReportManagement: React.FC = () => {
             data={data?.reports || []}
             columns={[
               {
-                key: 'targetBusiness',
+                key: 'reportedBusiness',
                 label: 'Business Name',
-                render: (report) => `${report.targetBusiness.companyName}`,
+                render: (report) => report.reportedBusiness.companyName,
                 onClick: (report) => {
                   router.push(
                     `/dashboard/business-report-management/${report.id}`
@@ -118,28 +104,20 @@ const BusinessReportManagement: React.FC = () => {
                 },
               },
               {
-                key: 'reporterBusiness',
-                label: 'Reporter Business',
-                render: (report) =>
-                  report.reporterBusiness
-                    ? `${report.reporterBusiness.user.firstName} ${report.reporterBusiness.user.lastName}`
-                    : '-',
-              },
-              {
                 key: 'reporterWorker',
                 label: 'Reporter Worker',
                 render: (report) =>
-                  `${report.reporterWorker?.user.firstName} ${report.reporterWorker?.user.lastName}`,
-              },
-              {
-                key: 'category',
-                label: 'Category',
-                render: (report) => report.category,
+                  `${report.reporterWorker.user.firstName} ${report.reporterWorker.user.lastName}`,
               },
               {
                 key: 'reason',
                 label: 'Reason',
                 render: (report) => report.reason,
+              },
+              {
+                key: 'description',
+                label: 'Description',
+                render: (report) => report.description,
               },
               {
                 key: 'status',
@@ -158,13 +136,18 @@ const BusinessReportManagement: React.FC = () => {
                   </span>
                 ),
               },
+              {
+                key: 'createdAt',
+                label: 'Created At',
+                render: (report) => format(new Date(report.createdAt), 'PPP'),
+              },
             ]}
             totalCount={data?.pagination?.totalCount || 0}
-            itemsPerPage={10}
+            itemsPerPage={itemsPerPage}
             currentPage={data?.pagination?.currentPage || 0}
             onPageChange={setCurrentPage}
             isFetching={isFetching}
-            renderRowActions={(user) => (
+            renderRowActions={(report) => (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost">
@@ -191,18 +174,12 @@ const BusinessReportManagement: React.FC = () => {
                     className="cursor-pointer"
                     onClick={() => {
                       toggleBlockMutation({
-                        businessId: user.targetBusiness.id,
+                        businessId: report.reportedBusinessId,
                       });
                     }}
                   >
-                    {user.targetBusiness.isBlocked ? 'Unblock' : 'Block'}
+                    Block Business
                   </DropdownMenuItem>
-                  {/* <DropdownMenuItem
-                    className="cursor-pointer"
-                    onClick={() => console.log("Delete", user)}
-                  >
-                    Block
-                  </DropdownMenuItem> */}
                 </DropdownMenuContent>
               </DropdownMenu>
             )}

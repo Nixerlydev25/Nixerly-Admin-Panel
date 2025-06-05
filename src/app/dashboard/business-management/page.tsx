@@ -20,11 +20,12 @@ import {
 } from '@/services/business/business.hooks';
 import { TBusinessProfileResponse } from '@/types/business';
 import { useRouter } from 'next/navigation';
+import { DateRange } from 'react-day-picker';
 
 const BusinessManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [status, setStatus] = useState<string>('');
-  const [country, setCountry] = useState<string>('');
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 10;
   const router = useRouter();
@@ -33,7 +34,8 @@ const BusinessManagement: React.FC = () => {
     page: currentPage,
     search: searchQuery,
     status: status,
-    country: country,
+    startDate: dateRange?.from?.toISOString(),
+    endDate: dateRange?.to?.toISOString(),
     limit: itemsPerPage,
   });
   const { toggleBlockMutation } = useBlockBusiness();
@@ -43,7 +45,7 @@ const BusinessManagement: React.FC = () => {
   const resetFilters = () => {
     setSearchQuery('');
     setStatus('');
-    setCountry('');
+    setDateRange(undefined);
     setCurrentPage(1);
     refetch();
   };
@@ -81,10 +83,11 @@ const BusinessManagement: React.FC = () => {
         onSearchChange={setSearchQuery}
         status={status}
         onStatusChange={setStatus}
-        country={country}
-        onCountryChange={setCountry}
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
         onResetFilters={resetFilters}
       />
+
 
       {/* Data Table Section */}
       <div className="p-6">

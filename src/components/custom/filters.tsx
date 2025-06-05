@@ -20,8 +20,6 @@ type FiltersProps = {
   searchPlaceHolder: string;
   status?: string;
   onStatusChange?: (value: string) => void;
-  country?: string;
-  onCountryChange?: (value: string) => void;
   employmentType?: string;
   onEmploymentTypeChange?: (value: string) => void;
   jobType?: string;
@@ -37,8 +35,6 @@ export function Filters({
   searchPlaceHolder,
   status,
   onStatusChange,
-  country,
-  onCountryChange,
   employmentType,
   onEmploymentTypeChange,
   jobType,
@@ -80,20 +76,6 @@ export function Filters({
         </Select>
       )}
 
-      {country !== undefined && onCountryChange && (
-        <Select value={country} onValueChange={onCountryChange}>
-          <SelectTrigger className="w-1/4">
-            <SelectValue placeholder="Filter by country" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="US">United States</SelectItem>
-            <SelectItem value="UK">United Kingdom</SelectItem>
-            <SelectItem value="CA">Canada</SelectItem>
-            <SelectItem value="AU">Australia</SelectItem>
-          </SelectContent>
-        </Select>
-      )}
-
       {employmentType !== undefined && onEmploymentTypeChange && (
         <Select value={employmentType} onValueChange={onEmploymentTypeChange}>
           <SelectTrigger className="w-1/4">
@@ -123,7 +105,7 @@ export function Filters({
         </Select>
       )}
 
-      {dateRange !== undefined && onDateRangeChange && (
+      {onDateRangeChange && (
         <DateRangePicker value={dateRange} onChange={onDateRangeChange} />
       )}
 
