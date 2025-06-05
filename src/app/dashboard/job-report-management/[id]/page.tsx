@@ -393,7 +393,7 @@ const JobReportDetails: React.FC = () => {
           {/* Actions Panel */}
           <div className="space-y-6">
             {/* Status Management */}
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle>Status Management</CardTitle>
               </CardHeader>
@@ -418,7 +418,7 @@ const JobReportDetails: React.FC = () => {
                   </Select>
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
             {/* Quick Actions */}
             <Card>

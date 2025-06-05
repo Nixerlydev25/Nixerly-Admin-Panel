@@ -454,7 +454,7 @@ const BusinessReportDetails: React.FC = () => {
           {/* Actions Panel */}
           <div className="space-y-6">
             {/* Status Management */}
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle>Status Management</CardTitle>
               </CardHeader>
@@ -477,12 +477,12 @@ const BusinessReportDetails: React.FC = () => {
                       <SelectItem value="REJECTED">Rejected</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
+                </div> */}
                 {/* <Button className="w-full" variant="outline">
                 Add Internal Note
               </Button> */}
-              </CardContent>
-            </Card>
+              {/* </CardContent>
+            </Card> */}
 
             {/* Quick Actions */}
             <Card>
